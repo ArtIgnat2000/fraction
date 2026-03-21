@@ -1,0 +1,53 @@
+Plan: Fraction Wheel — Roadmap и требования (RU)
+TL;DR - собрать расширяемую мини‑игру для детей (~10 лет) по сложению дробей: адаптивный генератор задач, многослойная подсказка, отдельный блок обучения про общий знаменатель, модуль аналитики (по дробям и по датам), TTS и анимации с опцией выключения.
+
+Steps
+
+
+Дизайн данных и архитектуры: STATE (задача, selected, settings, analytics), события аналитики, формат хранения (localStorage → later server). parallel with step 3
+Верстка минимального HTML/CSS шаблона и компонент колеса: статический рендер, центрированный flex layout, SVG‑сектора. depends on step 2
+Взаимодействие: клики по секторам → обновление STATE.selected; toggle подсказки; кнопки Проверить! и Следующая.
+Подсказка: реализовать как многошаговый блок (1. найти общий знаменатель, 2. привести дроби, 3. сложить) с возможностью показать/скрыть; первая подсказка показывается автоматически при первом запуске.
+Блок «Общий знаменатель»: отдельный визуальный урок (интерактивные шаги + TTS). parallel with step 4/5
+Настройки: переключатели для анимаций, озвучки, количества задач, режима (ручной/умный), экспорт/очистка аналитики.
+Генератор задач: набор шаблонов + регулировка количества задач + «умный режим» (базовая модель: per‑fraction mastery score; выбирать задачи с более высокой ошибочностью). depends on analytics model
+Модуль аналитики: трекать события — attempt, correct, timeSpent, date, fractionKey; агрегаты: ошибок по дробям, прогресс по дням. Хранение: localStorage JSON, экспорт CSV. parallel with step 8
+TTS: использовать Web Speech API как опцию; настройки выбора голоса и скорость.
+Анимации: CSS transitions for sector click; глобальный toggle в settings.
+Тесты: unit tests (Jest) для генератора задач, аналитики, и логики проверки; e2e (Puppeteer) для ключевых сценариев UI.
+Демо/развёртывание: собрать минимальный рабочий билд, загрузить на CodePen/gh‑pages по желанию.
+Relevant files (для реализации)
+
+info/Новый план..txt — исходный план и макет.
+src/index.html — основной HTML шаблон (создать).
+src/styles.css — стили, адаптивность и настройки анимаций (создать).
+src/app.js — рендер, STATE, обработчики (создать).
+src/analytics.js — сбор и экспорт данных (создать).
+src/settings.js — UI и persist настроек (создать).
+tests/ — unit и e2e тесты (создать).
+Verification
+
+Unit tests: генератор задач, проверка ответов, аналитика (Jest). 5+ тестов минимум.
+E2E: сценарии выбора секторов, подсказка toggle, TTS on/off (Puppeteer/manual).
+Accessibility: Lighthouse (целевой минимум 90), aria‑labels, keyboard navigation, screen‑reader smoke test.
+Responsive checks: widths 320px..414px (iPhone SE → iPhone 12).
+Manual QA: проверить анимации on/off, TTS on/off, экспорт CSV, аналитика по датам.
+Decisions / Предложения
+
+Хранение аналитики: стартуем с localStorage (простота, конфиденциальность), позже добавить серверный бекенд/экспорт.
+TTS: использовать Web Speech API (кроссбраузерно, без внешних сервисов).
+Адаптивность и доступность — приоритеты: flex‑центрирование, SVG + <text> для центра, pointer‑events для кликабельных секторов.
+Confirmed Decisions (user)
+
+Analytics: localStorage + CSV export (confirmed).
+Multi‑student: single student now; support multiple later.
+Profile fields for future multi‑student: name, age, avatar, class (1–4) (confirmed).
+Localization: Russian now, English later.
+TTS: Web Speech API (confirmed).
+Research: perform expert + neural research; save findings to session memory and export to info/expert_research.md on request.
+Priority: urgent.
+Open questions (if any remain)
+
+Multi‑student UI: when implementing profiles later — переключатель профилей: modal vs. settings page? (to decide when implementing profiles)
+Teacher/parent dashboard: нужно ли строить сейчас минимальную страницу/CSV-интерфейс? (по запросу)
+Expert Interview Templates (готовые вопросы)
