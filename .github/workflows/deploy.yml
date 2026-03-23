@@ -20,13 +20,10 @@ jobs:
         run: |
           echo "No build step configured"
 
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v1
+      - name: Deploy to gh-pages (JamesIves)
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          path: ./
-
-      - name: Configure Pages
-        uses: actions/configure-pages@v3
-
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v1
+          branch: gh-pages
+          folder: ./
+          clean: true
+          token: ${{ secrets.GITHUB_TOKEN }}
