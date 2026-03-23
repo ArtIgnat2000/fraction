@@ -1,16 +1,11 @@
-name: Deploy to GitHub Pages
+name: Deploy to GitHub Pages (gh-pages branch)
 
 on:
   push:
     branches: [ main ]
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
 jobs:
-  build-and-upload:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -18,25 +13,17 @@ jobs:
 
       - name: Remove node_modules and lockfile (if present)
         run: |
-          rm -rf node_modules
-          rm -f package-lock.json
+          rm -rf node_modules || true
+          rm -f package-lock.json || true
 
-      - name: (Optional) install/build
+      - name: (Optional) build
         run: |
-          # repository is static; if you have a build step, enable it here
           echo "No build step configured"
 
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v1
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          path: ./
-
-  deploy:
-    needs: build-and-upload
-    runs-on: ubuntu-latest
-    steps:
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v3
-
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v1
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
+          # Set keep_files to true if you want to preserve existing files on gh-pages
+          # keep_files: true
