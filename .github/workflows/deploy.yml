@@ -1,0 +1,34 @@
+name: Deploy to GitHub Pages (peaceiris)
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Remove node_modules and lockfile (if present)
+        run: |
+          rm -rf node_modules || true
+          rm -f package-lock.json || true
+
+      - name: (Optional) build
+        run: |
+          echo "No build step configured"
+
+      - name: Deploy to gh-pages (peaceiris)
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
+          publish_branch: gh-pages
+          force_orphan: true
+          user_name: github-actions[bot]
+          user_email: github-actions[bot]@users.noreply.github.com
